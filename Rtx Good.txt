@@ -1,0 +1,101 @@
+-- Espera a que el juego esté cargado
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+
+local Lighting = game:GetService("Lighting")
+
+-- Crear y configurar el efecto de Bloom
+local Bloom = Instance.new("BloomEffect")
+Bloom.Intensity = 0.1
+Bloom.Threshold = 0
+Bloom.Size = 100
+Bloom.Parent = Lighting
+
+-- Crear y configurar el efecto de Blur
+local Blur = Instance.new("BlurEffect")
+Blur.Size = 2
+Blur.Parent = Lighting
+
+-- Crear y configurar efectos de ColorCorrection
+local ColorCorrection = Instance.new("ColorCorrectionEffect")
+ColorCorrection.Saturation = 0
+ColorCorrection.TintColor = Color3.fromRGB(255, 255, 255)
+ColorCorrection.Parent = Lighting
+
+-- Crear y configurar el efecto de SunRays
+local SunRays = Instance.new("SunRaysEffect")
+SunRays.Intensity = 0.1
+SunRays.Parent = Lighting
+
+-- Configurar la iluminación para diferentes horas del día
+local function configureLightingForTimeOfDay(timeOfDay)
+    if timeOfDay >= 6 and timeOfDay < 18 then
+        -- Día
+        Lighting.Brightness = 2
+        Lighting.ColorShift_Top = Color3.fromRGB(255, 255, 255)
+        Lighting.ColorShift_Bottom = Color3.fromRGB(200, 200, 200)
+        Lighting.OutdoorAmbient = Color3.fromRGB(200, 200, 200)
+        Lighting.FogColor = Color3.fromRGB(200, 200, 200)
+        Lighting.FogEnd = 1000
+        Lighting.FogStart = 0
+        Lighting.ExposureCompensation = 0.1
+        Lighting.ShadowSoftness = 0.5
+        Lighting.Ambient = Color3.fromRGB(200, 200, 200)
+        ColorCorrection.Saturation = 0.1
+        SunRays.Intensity = 0.2
+        Lighting.Skybox = "rbxassetid://163140642"  -- Día
+    elseif timeOfDay >= 18 and timeOfDay < 20 then
+        -- Atardecer
+        Lighting.Brightness = 1
+        Lighting.ColorShift_Top = Color3.fromRGB(255, 170, 100)
+        Lighting.ColorShift_Bottom = Color3.fromRGB(150, 100, 50)
+        Lighting.OutdoorAmbient = Color3.fromRGB(150, 100, 50)
+        Lighting.FogColor = Color3.fromRGB(150, 100, 50)
+        Lighting.FogEnd = 1000
+        Lighting.FogStart = 0
+        Lighting.ExposureCompensation = 0.2
+        Lighting.ShadowSoftness = 0.3
+        Lighting.Ambient = Color3.fromRGB(150, 100, 50)
+        ColorCorrection.Saturation = 0.2
+        SunRays.Intensity = 0.3
+        Lighting.Skybox = "rbxassetid://163140643"  -- Atardecer
+    elseif timeOfDay >= 20 or timeOfDay < 6 then
+        -- Noche
+        Lighting.Brightness = 0.5
+        Lighting.ColorShift_Top = Color3.fromRGB(0, 0, 50)
+        Lighting.ColorShift_Bottom = Color3.fromRGB(0, 0, 20)
+        Lighting.OutdoorAmbient = Color3.fromRGB(0, 0, 20)
+        Lighting.FogColor = Color3.fromRGB(0, 0, 20)
+        Lighting.FogEnd = 1000
+        Lighting.FogStart = 0
+        Lighting.ExposureCompensation = 0.3
+        Lighting.ShadowSoftness = 0.8
+        Lighting.Ambient = Color3.fromRGB(0, 0, 20)
+        ColorCorrection.Saturation = -0.2
+        SunRays.Intensity = 0.05
+        Lighting.Skybox = "rbxassetid://1061884675"  -- Noche
+    end
+end
+
+-- Función para actualizar el tiempo y la iluminación
+local function updateLighting()
+    local hour = Lighting.ClockTime
+    configureLightingForTimeOfDay(hour)
+end
+
+-- Actualizar iluminación al iniciar el juego
+updateLighting()
+
+-- Actualizar iluminación cada minuto (opcional)
+while true do
+    wait(60)
+    updateLighting()
+end
+
+-- Crear y configurar el agua
+local Water = Instance.new("Water")
+Water.Size = 2000
+Water.Color = Color3.fromRGB(0, 100, 200)
+Water.Reflectance = 0.5
+Water.Parent = workspace
